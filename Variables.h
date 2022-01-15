@@ -31,3 +31,12 @@ struct Recepecionistas
     char Tel[25];
     usuarios us
 };
+
+struct Turnos
+{
+    int IdPro;
+    fecha Fecha;
+    int DNICliente;
+    char DetalleAtencion[380];
+    bool Pend;
+};

@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include<Variables.h>
+#include"Variables.h"
 
 void MuestraOp(int &O){
     printf("Modulo espacios\n");
@@ -14,12 +14,11 @@ void MuestraOp(int &O){
     scanf("%d", &O);
 }
 
-void InicioSes(bool &log, profesionales &selec){
+void InicioSes(*FILE archi, bool &log, profesionales &selec){
     char nomb[10], contr[32];
     int compU, CompC;
     Profesionales buff;
-    *FILE archi;
-    archi=fopen("Profesionales.dat", "r+b");
+    rewind(archi);
     printf("Ingrese su nombre de usuario\n");
     _flushall();
     gets(nomb);
@@ -45,23 +44,54 @@ void InicioSes(bool &log, profesionales &selec){
     }
 }
 
+void MuestraPacientes(*FILE &archi){
+    Profesionales buff;
+    fread(&buff, sizeof(Profesionales), 1, archi);
+    printf("Es el turno de %s\n", buff.Apynom);
+    printf("Para pasar al siguiente paciente pulse ENTER");
+    system("pause");
+    buff.Pend=false;
+}
+
+void RegTratamiento(*FILE &archi){
+
+}
+
 main(){
     int O;
     bool log;
     Profesionales selec;
+    *FILE Prof, Turnos;
+    Prof=fopen("Profesionales.dat", "r+b");
+    Turnos=fopen("Turnos.dat", "rb");
     MuestraOp(O);
     while(O!=4){
         if(O==1){
-            InicioSes();
+            InicioSes(Prof, log, selec);
             MuestraOp(O);
         } else if (O==2){
+            if (log)
+            {
+                MuestraPacientes(Turnos);
+            } else
+            {
+                printf("Para realizar esta operacion debe registrarse primero\n");
+            }
             MuestraOp(O);
         } else if (O==3){
+            if (log)
+            {
+                
+            } else
+            {
+                printf("Para realizar esta operacion debe registrarse primero\n");
+            }
             MuestraOp(O);
         } else{
-            printf("No pude encontrar el codigo deseado\n");
+            printf("Ingrese una opcion valida\n");
             MuestraOp(O);
         }
     }
-    
+    fclose(Prof);
+    fclose(Turnos);
 }
