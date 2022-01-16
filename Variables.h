@@ -37,6 +37,17 @@ struct Turnos
     int IdPro;
     fecha Fecha;
     int DNICliente;
-    char DetalleAtencion[380];
+    char DetAt[380];
     bool Pend;
+};
+
+struct Clientes
+{
+    char Apynom [60];
+    char Domicilio [60];
+    int DNICliente;
+    char Localidad [60];
+    fecha FechaNac;
+    float Peso;
+    char Tel[25];
 };
