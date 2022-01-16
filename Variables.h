@@ -1,4 +1,4 @@
-#include<string.h>
+#inlcude<string.h>
 
 struct fecha
 {
@@ -20,7 +20,7 @@ struct Profesionales
     int IdPro;
     int DNI;
     char Tel[25];
-    usuarios us
+    usuarios us;
 };
 
 struct Recepecionistas
@@ -29,7 +29,7 @@ struct Recepecionistas
     int IdRecep;
     int DNI;
     char Tel[25];
-    usuarios us
+    usuarios us;
 };
 
 struct Turnos
