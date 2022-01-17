@@ -55,7 +55,7 @@ void InicioSes(FILE *archi, bool &log, Profesionales &ProSelec){
             }
         }
         }
-        fread(&buff, sizeof(int), 1, archi);
+        fread(&buff, sizeof(Recepecionistas), 1, archi);
     }
 }
 
