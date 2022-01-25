@@ -51,3 +51,10 @@ struct Clientes
     float Peso;
     char Tel[25];
 };
+
+
+fecha hoy;
+
+main(){
+    fecha hoy;
+}

@@ -11,7 +11,7 @@ struct fechaAct
 };
 
 void MuestraOp(int &O){
-    printf("Modulo espacios\n");
+    printf("Modulo del recepcionista\n");
     printf("===============\n");
     printf("1-Iniciar sesion\n");
     printf("2-Registrar cliente\n");
