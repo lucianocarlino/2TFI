@@ -26,20 +26,121 @@ void MuestraOp(int &O){
 
 
 bool VerificacionUs(char cadena[10]){
-    bool r=false;
-
+    bool r=true;
+    int i, contM=0, contD=0;
+    int v[]={33, 42, 43, 45, 47, 63, 168, 173};
+    if (strlen(cadena)<6 or strlen(cadena)>10)
+    {
+        r=false;
+    }
+    if (cadena[0]<97 and cadena[0]>122)
+    {
+        r=false;
+    }
+    for ( i = 0; i < strlen(cadena); i++)
+    {
+        if (cadena[i]<48 and cadena[i]>57)
+        {
+            if (cadena[i]<65 and cadena[i]>90)
+            {
+                if (cadena[i]<97 and cadena[i]>122)
+                {
+                    for ( i = 0; i < 8; i++)
+                    {
+                        if (cadena[i]!=v[i])
+                        {
+                            r=false;
+                        } else
+                        {
+                            r=true;
+                        }
+                    }
+                }
+            } else
+            {
+                contM++;
+            }
+            
+        } else
+        {
+            contD++;
+        }
+        
+    }
+    if (contD>3)
+    {
+        r=false;
+    }
+    if (contM<2)
+    {
+        r=false;
+    }
     return r;
 }
 
 bool VerificacionContr(char cadena[32]){
-    bool r=false;
-    
+    bool r=true;
+    int i, contmin=0, contmay=0, contnum=0, j, k;
+    if (strlen(cadena)<6 or strlen(cadena)>32)
+    {
+        r=false;
+    }
+    for ( i = 0; i < strlen(cadena); i++)
+    {
+        if (cadena[i]<48 and cadena[i]>57)
+        {
+            if (cadena[i]<65 and cadena[i]>90)
+            {
+                if (cadena[i]<97 and cadena[i]>122)
+                {
+                    r=false;
+                } else
+                {
+                    contmin=1;
+                    if (cadena[i]==cadena[i+1]-1)
+                    {
+                        r=false;
+                    }
+                    if (cadena[1]==cadena[i+1]-33)
+                    {
+                        r=false;
+                    }
+                }
+            } else
+            {
+                contmay=1;
+                if (cadena[i]==cadena[i+1]-1)
+                {
+                    r=false;
+                }
+                if (cadena[1]==cadena[i+1]-33)
+                {
+                    r=false;
+                }
+            }
+        } else
+        {
+            contnum=1;
+            if (cadena[i]==cadena[i+1]-1 and cadena[i+1]==cadena[i+2]-1)
+            {
+                r=false;
+            }
+            if (cadena[i]==cadena[i+1]+1 and cadena[i+1]==cadena[i+2]+1)
+            {
+                r=false;
+            }
+        }
+    }
+    if (contmin<1 or contmay<1 or contnum<1)
+    {
+        r=false;
+    }
     return r;
 }
 
 void NuevoProf(FILE *archi){
-    fseek(archi, 0, SEEK_END);
-    Profesionales buff;
+    Profesionales buff, buffR;
+    int comp;
     bool val=false;
     char usuario[10], contr[32];
     printf("--Nuevo Profesional--");
@@ -73,6 +174,18 @@ void NuevoProf(FILE *archi){
         _flushall();
         gets(usuario);
         val=VerificacionUs(usuario);
+        fseek(archi, 0, SEEK_SET);
+        fread(&buffR, sizeof(Profesionales), 1, archi);
+        while (!feof(archi))
+        {
+            comp=strcmp(usuario, buffR.us.usuario);
+            fread(&buffR, sizeof(Profesionales), 1, archi);
+        }
+        if (comp==0)
+        {
+            printf("Su nombre de usuario no es unico\n");
+            val=false;
+        }
     }
     strcpy(buff.us.usuario, usuario);
     printf("Ingrese su contraseña, debe cumplir:\n");
@@ -97,13 +210,14 @@ void NuevoProf(FILE *archi){
         val=VerificacionContr(contr);
     }
     strcpy(buff.us.contr, contr);
+    fseek(archi, 0, SEEK_END);
     fwrite(&buff, sizeof(Profesionales), 1, archi);
     printf("Profesional registrado con exito\n");
 }
 
 void NuevoRecep(FILE *archi){
-    fseek(archi, 0, SEEK_END);
-    Recepecionistas buff;
+    Recepecionistas buff, buffR;
+    int comp;
     bool val=false;
     char usuario[10], contr[32];
     printf("--Nuevo Profesional--");
@@ -137,6 +251,18 @@ void NuevoRecep(FILE *archi){
         _flushall();
         gets(usuario);
         val=VerificacionUs(usuario);
+        fseek(archi, 0, SEEK_SET);
+        fread(&buffR, sizeof(Recepecionistas), 1, archi);
+        while (!feof(archi))
+        {
+            comp=strcmp(usuario, buffR.us.usuario);
+            fread(&buffR, sizeof(Recepecionistas), 1, archi);
+        }
+        if (comp==0)
+        {
+            printf("Su nombre de usuario no es unico\n");
+            val=false;
+        }
     }
     strcpy(buff.us.usuario, usuario);
     printf("Ingrese su contraseña, debe cumplir:\n");
@@ -161,6 +287,7 @@ void NuevoRecep(FILE *archi){
         val=VerificacionContr(contr);
     }
     strcpy(buff.us.contr, contr);
+    fseek(archi, 0, SEEK_END);
     fwrite(&buff, sizeof(Recepecionistas), 1, archi);
     printf("Recepcionista registrado con exito\n");
 }
