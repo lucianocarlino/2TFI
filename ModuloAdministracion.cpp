@@ -4,14 +4,6 @@
 #include<Variables.h>
 #include<cstdio>
 
-struct fechaAct
-{
-    int dia;
-    int mes;
-    int anio;
-};
-
-
 void MuestraOp(int &O){
     printf("Modulo administracion\n");
     printf("===============\n");
@@ -26,54 +18,61 @@ void MuestraOp(int &O){
 
 
 bool VerificacionUs(char cadena[10]){
-    bool r=true;
-    int i, contM=0, contD=0;
-    int v[]={33, 42, 43, 45, 47, 63, 168, 173};
+    bool r=true, existencia;
+    int i, j, contM, contD;
+    int v[]={33, 42, 43, 45, 47, 63, -88, -83};
+    contM=0;
+    contD=0;
     if (strlen(cadena)<6 or strlen(cadena)>10)
     {
         r=false;
+        printf("El nombre de usuario no cumple con los requisitos de longitud\n");
     }
-    if (cadena[0]<97 and cadena[0]>122)
+    if (!(cadena[0]>=97 and cadena[0]<=122))
     {
         r=false;
+        printf("El nombre de usuario no comienza con una letra minuscula\n");
     }
     for ( i = 0; i < strlen(cadena); i++)
     {
-        if (cadena[i]<48 and cadena[i]>57)
+        if (cadena[i]<48 or cadena[i]>57)
         {
-            if (cadena[i]<65 and cadena[i]>90)
+            if (cadena[i]<65 or cadena[i]>90)
             {
-                if (cadena[i]<97 and cadena[i]>122)
+                if (cadena[i]<97 or cadena[i]>122)
                 {
-                    for ( i = 0; i < 8; i++)
+                    existencia=false;
+                    for ( j = 0; j < 8; j++)
                     {
-                        if (cadena[i]!=v[i])
+                        if (cadena[i]==v[j])
                         {
-                            r=false;
-                        } else
-                        {
-                            r=true;
+                            existencia=true;       
                         }
+                    }
+                    if (!existencia)
+                    {
+                        r=false;
+                        printf("El nombre de usuario contiene un caracter ilegal\n");
                     }
                 }
             } else
             {
                 contM++;
-            }
-            
+            }   
         } else
         {
             contD++;
-        }
-        
+        }   
     }
     if (contD>3)
     {
         r=false;
+        printf("El nombre de usuario tiene mas de tres digitos\n");
     }
     if (contM<2)
     {
         r=false;
+        printf("El nombre de usuario tiene menos de dos mayusculas\n");
     }
     return r;
 }
@@ -84,56 +83,74 @@ bool VerificacionContr(char cadena[32]){
     if (strlen(cadena)<6 or strlen(cadena)>32)
     {
         r=false;
+        printf("La contrase%ca no cumple condiciones de longitud\n", 164);
     }
     for ( i = 0; i < strlen(cadena); i++)
     {
-        if (cadena[i]<48 and cadena[i]>57)
+        if (cadena[i]<48 or cadena[i]>57)
         {
-            if (cadena[i]<65 and cadena[i]>90)
+            if (cadena[i]<65 or cadena[i]>90)
             {
-                if (cadena[i]<97 and cadena[i]>122)
+                if (cadena[i]<97 or cadena[i]>122)
                 {
                     r=false;
+                    printf("La contrase%ca contiene caracteres ilegales\n", 164);
                 } else
                 {
                     contmin=1;
-                    if (cadena[i]==cadena[i+1]-1)
+                    if (r)
                     {
-                        r=false;
-                    }
-                    if (cadena[1]==cadena[i+1]-33)
-                    {
-                        r=false;
+                        if (cadena[i]==cadena[i+1]-1)
+                        {
+                            r=false;
+                            printf("La contrase%ca contiene letras seguidas\n", 164);
+                        }
+                        if (cadena[i]==cadena[i+1]+31)
+                        {
+                            r=false;
+                            printf("La contrase%ca contiene letras seguidas\n", 164);
+                        }
                     }
                 }
             } else
             {
                 contmay=1;
-                if (cadena[i]==cadena[i+1]-1)
+                if (r)
                 {
-                    r=false;
-                }
-                if (cadena[1]==cadena[i+1]-33)
-                {
-                    r=false;
+                    if (cadena[i]==cadena[i+1]-1)
+                    {
+                        r=false;
+                        printf("La contrase%ca contiene letras seguidas\n", 164);
+                    }
+                    if (cadena[i]==cadena[i+1]-33)
+                    {
+                        r=false;
+                        printf("La contrase%ca contiene letras seguidas\n", 164);
+                    }
                 }
             }
         } else
         {
             contnum=1;
-            if (cadena[i]==cadena[i+1]-1 and cadena[i+1]==cadena[i+2]-1)
+            if (r)
             {
-                r=false;
-            }
-            if (cadena[i]==cadena[i+1]+1 and cadena[i+1]==cadena[i+2]+1)
-            {
-                r=false;
+                if (cadena[i]==cadena[i+1]-1 and cadena[i+1]==cadena[i+2]-1)
+                {
+                    r=false;
+                    printf("La contrase%ca contiene numeros seguidos\n", 164);
+                }
+                if (cadena[i]==cadena[i+1]+1 and cadena[i+1]==cadena[i+2]+1)
+                {
+                    r=false;
+                    printf("La contrase%ca contiene numeros seguidos\n", 164);
+                }
             }
         }
     }
     if (contmin<1 or contmay<1 or contnum<1)
     {
         r=false;
+        printf("La contrase%ca debe contener al menos una minuscula, mayuscula y numero\n", 164);
     }
     return r;
 }
@@ -143,12 +160,12 @@ void NuevoProf(FILE *archi){
     int comp;
     bool val=false;
     char usuario[10], contr[32];
-    printf("--Nuevo Profesional--");
+    printf("--Nuevo Profesional--\n");
     printf("Ingrese el apellido y nombre\n");
     _flushall();
     gets(buff.Apynom);
     printf("Ingrese el Id de profesional\n");
-    scanf("%d", buff.IdPro);
+    scanf("%d", &buff.IdPro);
     printf("Ingrese el DNI\n");
     scanf("%d", &buff.DNI);
     printf("Ingrese el telefono\n");
@@ -165,15 +182,15 @@ void NuevoProf(FILE *archi){
     val=VerificacionUs(usuario);
     while (!val)
     {
-        printf("El nombre de usuario no cumple uno de los requisitos\n");
         printf("Ingrese su nombre de usuario, debe cumplir:\n");
         printf("Minimo 6 caracteres, maximo 10 caracteres\n");
-        printf("Se aceptan lestras, digitos (como maximo 3) y simbolos del conjunto: +, -, /, ?, ¿, !, ¡\n");
+        printf("Se aceptan letras, digitos (como maximo 3) y simbolos del conjunto: +, -, /, ?, ¿, !, ¡\n");
         printf("Comenzar con una letra minuscula\n");
         printf("Contener al menos dos letras mayusculas\n");
         _flushall();
         gets(usuario);
         val=VerificacionUs(usuario);
+        comp=2;
         fseek(archi, 0, SEEK_SET);
         fread(&buffR, sizeof(Profesionales), 1, archi);
         while (!feof(archi))
@@ -183,12 +200,13 @@ void NuevoProf(FILE *archi){
         }
         if (comp==0)
         {
-            printf("Su nombre de usuario no es unico\n");
+            printf("El nombre de usuario no es unico\n");
             val=false;
         }
     }
     strcpy(buff.us.usuario, usuario);
-    printf("Ingrese su contraseña, debe cumplir:\n");
+    printf("Su nombre de usuario fue guardado como %s\n", usuario);
+    printf("Ingrese su contrase%ca, debe cumplir:\n", 164);
     printf("Minimo 6 caracteres, maximo 32 caracteres\n");
     printf("Solo se aceptan letras y digitos, al menos una minuscula, una mayuscula y un digito\n");
     printf("No debe tener mas de tres digitos consecutivos\n");
@@ -199,8 +217,7 @@ void NuevoProf(FILE *archi){
     val=VerificacionContr(contr);
     while (!val)
     {
-        printf("La contraseña no cumple uno de los requisitos\n");
-        printf("Ingrese su contraseña, debe cumplir:\n");
+        printf("Ingrese su contrase%ca, debe cumplir:\n", 164);
         printf("Minimo 6 caracteres, maximo 32 caracteres\n");
         printf("Solo se aceptan letras y digitos, al menos una minuscula, una mayuscula y un digito\n");
         printf("No debe tener mas de tres digitos consecutivos\n");
@@ -220,12 +237,12 @@ void NuevoRecep(FILE *archi){
     int comp;
     bool val=false;
     char usuario[10], contr[32];
-    printf("--Nuevo Profesional--");
+    printf("--Nuevo Profesional--\n");
     printf("Ingrese el apellido y nombre\n");
     _flushall();
     gets(buff.Apynom);
     printf("Ingrese el Id de profesional\n");
-    scanf("%d", buff.IdRecep);
+    scanf("%d", &buff.IdRecep);
     printf("Ingrese el DNI\n");
     scanf("%d", &buff.DNI);
     printf("Ingrese el telefono\n");
@@ -265,7 +282,8 @@ void NuevoRecep(FILE *archi){
         }
     }
     strcpy(buff.us.usuario, usuario);
-    printf("Ingrese su contraseña, debe cumplir:\n");
+    printf("Su nombre de usuario fue guardado como %s\n", usuario);
+    printf("Ingrese su contrase%ca, debe cumplir:\n", 164);
     printf("Minimo 6 caracteres, maximo 32 caracteres\n");
     printf("Solo se aceptan letras y digitos, al menos una minuscula, una mayuscula y un digito\n");
     printf("No debe tener mas de tres digitos consecutivos\n");
@@ -276,8 +294,7 @@ void NuevoRecep(FILE *archi){
     val=VerificacionContr(contr);
     while (!val)
     {
-        printf("La contraseña no cumple uno de los requisitos\n");
-        printf("Ingrese su contraseña, debe cumplir:\n");
+        printf("Ingrese su contrase%ca, debe cumplir:\n", 164);
         printf("Minimo 6 caracteres, maximo 32 caracteres\n");
         printf("Solo se aceptan letras y digitos, al menos una minuscula, una mayuscula y un digito\n");
         printf("No debe tener mas de tres digitos consecutivos\n");
@@ -293,13 +310,13 @@ void NuevoRecep(FILE *archi){
 }
 
 void Informe(FILE *archi){
-    fechaAct Busq;
+    fecha Busq;
     Turnos buffT;
     int ProfId, cont=0;
     rewind(archi);
     printf("Ingrese el ID del profesional a buscar\n");
     scanf("%d", &ProfId);
-    printf("Ingrese el mes y año a buscar\n");
+    printf("Ingrese el mes y a%co a buscar\n", 164);
     printf("Mes: \n");
     scanf("%d", &Busq.mes);
     printf("Anio: \n");
@@ -311,7 +328,7 @@ void Informe(FILE *archi){
         {
             if (ProfId==buffT.IdPro)
             {
-                cont=cont++;
+                cont++;
             }
         }
         fread(&buffT, sizeof(Turnos), 1, archi);
@@ -320,13 +337,13 @@ void Informe(FILE *archi){
 }
 
 void Ranking(FILE *archi, FILE *Prof){
-    fechaAct Busq;
+    fecha Busq;
     Turnos buffT;
     Profesionales buffP, MejProf;
     int v[500], contPac=0, MayPac=0;
     rewind(archi);
     rewind(Prof);
-    printf("Ingrese el mes y año a buscar\n");
+    printf("Ingrese el mes y a%co a buscar\n", 164);
     printf("Mes: \n");
     scanf("%d", &Busq.mes);
     printf("Anio: \n");
@@ -341,7 +358,7 @@ void Ranking(FILE *archi, FILE *Prof){
             {
                 if (buffP.IdPro==buffT.IdPro)
                 {
-                    contPac=contPac++;
+                    contPac++;
                 }
             }
             fread(&buffT, sizeof(Turnos), 1, archi);
@@ -354,7 +371,7 @@ void Ranking(FILE *archi, FILE *Prof){
         contPac=0;
         fread(&buffP, sizeof(Profesionales), 1, Prof);
     }
-    printf("El profesional que mas pacientes atendió este mes es: %s, con ID %d\n", MejProf.Apynom, MejProf.IdPro);
+    printf("El profesional que mas pacientes atendio este mes es: %s, con ID de profesional %d\n", MejProf.Apynom, MejProf.IdPro);
 }
 
 main(){

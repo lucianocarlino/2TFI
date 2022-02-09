@@ -4,14 +4,6 @@
 #include<Variables.h>
 #include<cstdio>
 
-struct fechaAct
-{
-    int dia;
-    int mes;
-    int anio;
-};
-
-
 void MuestraOp(int &O){
     printf("Modulo espacios\n");
     printf("===============\n");
@@ -40,18 +32,18 @@ void InicioSes(FILE *archi, bool &log, Profesionales &ProSelec){
         printf("Bienvenido %s\n", buff.Apynom);
         while (!log)
         {
-            printf("Ingrese su contraseña\n");
+            printf("Ingrese su contrase%ca\n", 164);
             _flushall();
             gets(contr);
             CompC=strcmp(contr, buff.us.contr);
             if (CompC==0)
             {
-                printf("Se registró con exito\n");
+                printf("Se registro con exito\n");
                 log=true;
                 ProSelec=buff;
             } else
             {
-                printf("La contraseña es incorrecta\n");
+                printf("La contrase%ca es incorrecta\n", 164);
             }
         }
         }
@@ -59,7 +51,7 @@ void InicioSes(FILE *archi, bool &log, Profesionales &ProSelec){
     }
 }
 
-void MuestraPacientes(FILE *archi, FILE *Cliente, Turnos &TurSelec, Clientes &ClienteSelec){
+void MuestraPacientes(FILE *archi, FILE *Cliente, Turnos &TurSelec, Clientes &ClienteSelec, fecha hoy){
     Turnos buffT;
     int edad;
     Clientes buffC;
@@ -67,34 +59,40 @@ void MuestraPacientes(FILE *archi, FILE *Cliente, Turnos &TurSelec, Clientes &Cl
     fread(&buffT, sizeof(Turnos), 1, archi);
     while (!feof(archi) && !Muestra)
     {
-        if (buffT.Pend)
+        if (hoy.dia==buffT.Fecha.dia and hoy.mes==buffT.Fecha.mes and hoy.anio==buffT.Fecha.anio)
         {
-            fread(&buffC, sizeof(Clientes), 1, Cliente);
-            while (!feof(Cliente) && !Muestra)
+            if (buffT.Pend)
             {
-                if (ClienteSelec.DNICliente==buffC.DNICliente)
-                {
-                    printf("Es el turno de %s\n", buffC.Apynom);
-                    printf("DNI: %d\n", buffC.DNICliente);
-                    printf("Domicilio: %s\n", buffC.Domicilio);
-                    edad=2020-buffC.FechaNac.anio;
-                    printf("Edad: %d\n", edad);
-                    printf("Peso: %.2f\n", buffC.Peso);
-                    printf("Para pasar al siguiente paciente pulse ENTER\n");
-                    system("pause");
-                    buffT.Pend=false;
-                    TurSelec=buffT;
-                    ClienteSelec=buffC;
-                    Muestra=true;
-                }
                 fread(&buffC, sizeof(Clientes), 1, Cliente);
+                while (!feof(Cliente) && !Muestra)
+                {
+                    if (buffT.DNICliente==buffC.DNICliente)
+                    {
+                        printf("Es el turno de %s\n", buffC.Apynom);
+                        printf("DNI: %d\n", buffC.DNICliente);
+                        printf("Domicilio: %s\n", buffC.Domicilio);
+                        edad=2020-buffC.FechaNac.anio;
+                        printf("Edad: %d\n", edad);
+                        printf("Peso: %.2f\n", buffC.Peso);
+                        printf("Para pasar al siguiente paciente pulse ENTER\n");
+                        system("pause");
+                        buffT.Pend=false;
+                        TurSelec=buffT;
+                        ClienteSelec=buffC;
+                        Muestra=true;
+                    }
+                    fread(&buffC, sizeof(Clientes), 1, Cliente);
+                }
             }
+        } else
+        {
+            printf("No tiene turnos hoy\n");
         }
         fread(&buffT, sizeof(Turnos), 1, archi);
     }
 }
 
-void RegTratamiento(FILE *archi, Clientes Cliente, Profesionales Prof, fechaAct fech){
+void RegTratamiento(FILE *archi, Clientes Cliente, Profesionales Prof, fecha fech){
     rewind(archi);
     Turnos buff;
     char Detalle[380], FechaChar[20];
@@ -121,7 +119,7 @@ void RegTratamiento(FILE *archi, Clientes Cliente, Profesionales Prof, fechaAct 
 main(){
     int O;
     bool log;
-    fechaAct Hoy;
+    fecha Hoy;
     Profesionales ProSelec;
     Turnos TurSelec;
     Clientes ClienteSelec;
@@ -144,7 +142,7 @@ main(){
         } else if (O==2){
             if (log)
             {
-                MuestraPacientes(Turnosa, Clientesa, TurSelec, ClienteSelec);
+                MuestraPacientes(Turnosa, Clientesa, TurSelec, ClienteSelec, Hoy);
             } else
             {
                 printf("Para realizar esta operacion debe registrarse primero\n");

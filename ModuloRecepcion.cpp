@@ -3,13 +3,6 @@
 #include<string.h>
 #include<Variables.h>
 
-struct fechaAct
-{
-    int dia;
-    int mes;
-    int anio;
-};
-
 void MuestraOp(int &O){
     printf("Modulo del recepcionista\n");
     printf("===============\n");
@@ -39,18 +32,18 @@ void InicioSes(FILE *archi, bool &log, Recepecionistas &RecepSelec){
         printf("Bienvenido %s\n", buff.Apynom);
         while (!log)
         {
-            printf("Ingrese su contraseña\n");
+            printf("Ingrese su contrase%ca\n",164);
             _flushall();
             gets(contr);
             CompC=strcmp(contr, buff.us.contr);
             if (CompC==0)
             {
-                printf("Se registró con exito\n");
+                printf("Se registro con exito\n");
                 log=true;
                 RecepSelec=buff;
             } else
             {
-                printf("La contraseña es incorrecta\n");
+                printf("La contrase%ca es incorrecta\n", 164);
             }
         }
         }
@@ -61,7 +54,8 @@ void InicioSes(FILE *archi, bool &log, Recepecionistas &RecepSelec){
 void RegistroCliente(FILE *archi){
     fseek(archi, 0, SEEK_END);
     Clientes buff;
-    printf("--Nuevo cliente--");
+    int valid;
+    printf("--Nuevo cliente--\n");
     printf("Ingrese el Apellido y nombre\n");
     _flushall();
     gets(buff.Apynom);
@@ -85,14 +79,19 @@ void RegistroCliente(FILE *archi){
     printf("Ingrese su telefono celular\n");
     _flushall();
     gets(buff.Tel);
-    fwrite(&buff, sizeof(Clientes), 1, archi);
-    printf("Cliente registrado con exito\n");
+    valid=fwrite(&buff, sizeof(Clientes), 1, archi);
+    if (valid==1)
+    {
+        printf("Cliente registrado con exito\n");    
+    }
+    
+    
 }
 
 void RegistroTurno(FILE *archi){
-    fseek(archi, 0, SEEK_END);
     Turnos buff;
-    printf("--Nuevo Turno--");
+    int valid;
+    printf("--Nuevo Turno--\n");
     printf("Ingrese ID del profesional requerido\n");
     scanf("%d", &buff.IdPro);
     printf("Ingrese la fecha del turno, con numeros\n");
@@ -104,20 +103,21 @@ void RegistroTurno(FILE *archi){
     scanf("%d", &buff.Fecha.anio);
     printf("Ingrese el DNI del cliente\n");
     scanf("%d", &buff.DNICliente);
-    printf("Ingrese el DNI\n");
-    scanf("%d", &buff.DNICliente);
     buff.Pend=true;
-    fwrite(&buff, sizeof(Turnos), 1, archi);
-    printf("Turno registrado con exito\n");
+    valid=fwrite(&buff, sizeof(Turnos), 1, archi);
+    if (valid==1)
+    {
+        printf("Turno registrado con exito\n");    
+    }
 }
 
 void Informe(FILE *archi, FILE *Cliente){
-    fechaAct Busq;
+    fecha Busq;
     Turnos buffT;
     Clientes buffC;
     int ProfId, v[500], cont=0, i;
-    rewind(archi);
-    rewind(Cliente);
+    fseek(archi, 0, SEEK_SET);
+    fseek(Cliente, 0, SEEK_SET);
     printf("Ingrese el ID del profesional a buscar\n");
     scanf("%d", &ProfId);
     printf("Ingrese la fecha a buscar\n");
@@ -130,17 +130,17 @@ void Informe(FILE *archi, FILE *Cliente){
     fread(&buffT, sizeof(Turnos), 1, archi);
     while (!feof(archi))
     {
-        if (Busq.dia==buffT.Fecha.dia && Busq.mes==buffT.Fecha.mes && Busq.anio==buffT.Fecha.anio)
+        if (Busq.dia==buffT.Fecha.dia and Busq.mes==buffT.Fecha.mes and Busq.anio==buffT.Fecha.anio)
         {
             if (ProfId==buffT.IdPro)
             {
                 v[cont]=buffT.DNICliente;
-                cont=cont++;
+                cont++;
             }
         }
         fread(&buffT, sizeof(Turnos), 1, archi);
     }
-    printf("El profesional vió a %d pacientes\n", cont);
+    printf("El profesional vio a %d pacientes\n", cont);
     fread(&buffC, sizeof(Clientes), 1, Cliente);
     while (!feof(Cliente))
     {
@@ -165,7 +165,7 @@ void Informe(FILE *archi, FILE *Cliente){
 main(){
     int O;
     bool log;
-    fechaAct Hoy;
+    fecha Hoy;
     Recepecionistas RecepSelec;
     FILE *Turnosa, *Clientesa, *Recep;
     Recep=fopen("Recepcionistas.dat", "r+b");
@@ -174,13 +174,16 @@ main(){
     while(O!=5){
         if(O==1){
             InicioSes(Recep, log, RecepSelec);
-            printf("Ingrese la fecha de hoy, en numeros\n");
-            printf("Dia: \n");
-            scanf("%d", &Hoy.dia);
-            printf("Mes: \n");
-            scanf("%d", &Hoy.mes);
-            printf("Anio: \n");
-            scanf("%d", &Hoy.anio);
+            if (log)
+            {    
+                printf("Ingrese la fecha de hoy, en numeros\n");
+                printf("Dia: \n");
+                scanf("%d", &Hoy.dia);
+                printf("Mes: \n");
+                scanf("%d", &Hoy.mes);
+                printf("Anio: \n");
+                scanf("%d", &Hoy.anio);    
+            }
             MuestraOp(O);
         } else if (O==2){
             if (log)
